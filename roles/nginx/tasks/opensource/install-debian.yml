@@ -1,5 +1,6 @@
 ---
-- name: (Debian/Ubuntu) {{ (nginx_setup == 'uninstall') | ternary('Remove', 'Configure') }} NGINX repository
+- name: (Debian/Ubuntu) {{ (nginx_setup == 'uninstall') | ternary('Remove',
+    'Configure') }} NGINX repository
   ansible.builtin.apt_repository:
     filename: nginx
     repo: "{{ item }}"
@@ -9,7 +10,8 @@
   loop: "{{ nginx_repository | default(nginx_default_repository_debian) }}"
   when: nginx_manage_repo | bool
 
-- name: (Debian/Ubuntu) {{ (nginx_setup == 'uninstall') | ternary('Unpin', 'Pin') }} NGINX repository
+- name: (Debian/Ubuntu) {{ (nginx_setup == 'uninstall') | ternary('Unpin', 'Pin')
+    }} NGINX repository
   ansible.builtin.blockinfile:
     path: /etc/apt/preferences.d/99nginx
     create: true
@@ -22,7 +24,7 @@
     state: "{{ (nginx_state == 'uninstall') | ternary('absent', 'present') }}"
   when: nginx_repository is not defined
 
-- name: (Debian/Ubuntu) {{ nginx_setup | capitalize }} NGINX
+- name: (Debian/Ubuntu) {{ nginx_setup | capitalize }} NGINX apt
   ansible.builtin.apt:
     name: nginx{{ nginx_version | default('') }}
     state: "{{ nginx_state }}"
@@ -30,4 +32,3 @@
     allow_downgrade: "{{ omit if ansible_version['full'] is version('2.12', '<') else true }}"
   ignore_errors: "{{ ansible_check_mode }}"
   notify: (Handler) Run NGINX
-  tags: never

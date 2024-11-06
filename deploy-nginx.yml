@@ -1,8 +1,6 @@
 ---
 - name: Install NGINX
   hosts: all
-  remote_user: ansible
-  private_key_file: ~/.ssh/id_yavm
   become: yes
   gather_facts: yes
   tasks:
